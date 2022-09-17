@@ -1,35 +1,57 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { from, of } from 'rxjs';
 import { AppComponent } from './app.component';
+import { DataService } from './data.service';
+import { ToSymbolPipe } from './to-symbol.pipe';
 
 describe('AppComponent', () => {
+  let dataService: jasmine.SpyObj<DataService>;
   beforeEach(async () => {
+    dataService = jasmine.createSpyObj('DataService', ['getNumbers']);
     await TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        AppComponent
+      imports: [NoopAnimationsModule, MatSnackBarModule],
+      declarations: [AppComponent, ToSymbolPipe],
+      providers: [
+        {
+          provide: DataService,
+          useValue: dataService,
+        },
       ],
     }).compileComponents();
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'first-angular-project'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('first-angular-project');
-  });
-
-  it('should render title', () => {
+  it("shows a snackbar if numbers.json doesn't exist", () => {
+    dataService.getNumbers.and.throwError('not found');
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('first-angular-project app is running!');
+    expect(compiled.querySelectorAll('li')).toHaveSize(0);
+    expect(
+      compiled.ownerDocument.querySelector('.mat-snack-bar-container')
+    ).toBeTruthy();
+  });
+
+  it('displays the items correctly', () => {
+    dataService.getNumbers.and.returnValues(
+      from([
+        {
+          value: 5,
+          secondValue: 10,
+          action: 'add',
+          result: 15,
+        },
+        null, // the result of a non-existent operation
+      ])
+    );
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const items = compiled.querySelectorAll('li');
+    expect(items).toHaveSize(2);
+    expect(items[0].textContent).toContain('5 + 10 = 15');
+    expect(items[1].textContent).toContain('MISSING DATA');
   });
 });

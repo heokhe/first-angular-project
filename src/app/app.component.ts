@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { catchError } from 'rxjs';
 import { DataService, IStatement } from './data.service';
 
 @Component({
@@ -15,14 +14,21 @@ export class AppComponent implements OnInit {
     private dataService: DataService,
     private _snackbar: MatSnackBar
   ) {}
+  private showErrorSnackbar() {
+    this._snackbar.open('Server Error');
+  }
   ngOnInit() {
-    this.dataService.getNumbers().subscribe(
-      (statement) => {
-        this.statements.push(statement);
-      },
-      () => {
-        this._snackbar.open('Server Error');
-      }
-    );
+    try {
+      this.dataService.getNumbers().subscribe({
+        next: (statement) => {
+          this.statements.push(statement);
+        },
+        error: () => {
+          this.showErrorSnackbar();
+        },
+      });
+    } catch {
+      this.showErrorSnackbar();
+    }
   }
 }

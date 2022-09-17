@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { DataService, INumber, IOperation, IStatement } from './data.service';
+import { DataService, INumber, IOperation, IEquation } from './data.service';
 
 describe('DataService', () => {
   let httpTestingController: HttpTestingController;
@@ -27,20 +27,20 @@ describe('DataService', () => {
       { value: 1, action: 'add' },
       { value: 2, action: 'multiply' },
     ];
-    const statements: IStatement[] = [];
-    service.getNumbers().subscribe((statement) => {
-      const index = statements.length;
-      expect(statement).toBeTruthy();
-      statements.push(statement!);
+    const equations: IEquation[] = [];
+    service.getEquations().subscribe((equation) => {
+      const index = equations.length;
+      expect(equation).toBeTruthy();
+      equations.push(equation!);
 
       if (index === 0) {
-        expect(statement!.result).toEqual(4);
+        expect(equation!.result).toEqual(4);
       }
 
       if (index === 1) {
-        expect(statement!.result).toEqual(20);
+        expect(equation!.result).toEqual(20);
 
-        expect(statements.map((st) => st.value))
+        expect(equations.map((st) => st.value))
           .withContext('preserves the order')
           .toEqual(data.map((d) => d.value));
 
@@ -57,7 +57,7 @@ describe('DataService', () => {
   });
 
   it('should handle non-existent operations', (done) => {
-    service.getNumbers().subscribe((statement) => {
+    service.getEquations().subscribe((statement) => {
       expect(statement).toBeFalsy();
       done();
     });

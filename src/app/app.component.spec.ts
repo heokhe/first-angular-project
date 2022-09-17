@@ -10,7 +10,7 @@ import { ToSymbolPipe } from './to-symbol.pipe';
 describe('AppComponent', () => {
   let dataService: jasmine.SpyObj<DataService>;
   beforeEach(async () => {
-    dataService = jasmine.createSpyObj('DataService', ['getNumbers']);
+    dataService = jasmine.createSpyObj('DataService', ['getEquations']);
     await TestBed.configureTestingModule({
       imports: [NoopAnimationsModule, MatSnackBarModule],
       declarations: [AppComponent, ToSymbolPipe],
@@ -24,7 +24,7 @@ describe('AppComponent', () => {
   });
 
   it("shows a snackbar if numbers.json doesn't exist", () => {
-    dataService.getNumbers.and.throwError('not found');
+    dataService.getEquations.and.throwError('not found');
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
@@ -35,7 +35,7 @@ describe('AppComponent', () => {
   });
 
   it('displays the items correctly', () => {
-    dataService.getNumbers.and.returnValues(
+    dataService.getEquations.and.returnValues(
       from([
         {
           value: 5,

@@ -1,10 +1,10 @@
 <h1>Hello and welcome to {{ title }}</h1>
 <ul>
-  <li *ngFor="let statement of statements">
-    <div *ngIf="!statement; else elseBlock">MISSING DATA</div>
+  <li *ngFor="let equation of equations">
+    <div *ngIf="!equation; else elseBlock">MISSING DATA</div>
     <ng-template #elseBlock>
-      {{ statement!.value }} {{ statement!.action | toSymbol }}
-      {{ statement!.secondValue }} = {{ statement!.result }}
+      {{ equation!.value }} {{ equation!.action | toSymbol }}
+      {{ equation!.secondValue }} = {{ equation!.result }}
     </ng-template>
   </li>
 </ul>

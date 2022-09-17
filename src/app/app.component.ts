@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DataService, IStatement } from './data.service';
+import { DataService, IEquation } from './data.service';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +8,7 @@ import { DataService, IStatement } from './data.service';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  title = 'first-angular-project';
-  statements: (IStatement | null)[] = [];
+  equations: (IEquation | null)[] = [];
   constructor(
     private dataService: DataService,
     private _snackbar: MatSnackBar
@@ -19,9 +18,9 @@ export class AppComponent implements OnInit {
   }
   ngOnInit() {
     try {
-      this.dataService.getNumbers().subscribe({
-        next: (statement) => {
-          this.statements.push(statement);
+      this.dataService.getEquations().subscribe({
+        next: (equation) => {
+          this.equations.push(equation);
         },
         error: () => {
           this.showErrorSnackbar();

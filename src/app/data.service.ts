@@ -11,7 +11,7 @@ export interface IOperation {
   value: number;
 }
 
-export interface IStatement {
+export interface IEquation {
   action: string;
   value: number;
   secondValue: number;
@@ -20,7 +20,7 @@ export interface IStatement {
 
 type ActionFunction = (a: number, b: number) => number;
 
-const actions: {
+const actionFunctionsMap: {
   [x: string]: ActionFunction;
 } = {
   add: (a, b) => a + b,
@@ -32,7 +32,7 @@ const actions: {
 })
 export class DataService {
   constructor(private http: HttpClient) {}
-  getNumbers(): Observable<IStatement | null> {
+  getEquations(): Observable<IEquation | null> {
     return this.http.get<INumber[]>('/assets/numbers.json').pipe(
       mergeMap((numbers) => numbers),
       mergeMap(
@@ -47,7 +47,7 @@ export class DataService {
                     action,
                     value,
                     secondValue,
-                    result: actions[action](value, secondValue),
+                    result: actionFunctionsMap[action](value, secondValue),
                   }
             )
           ),

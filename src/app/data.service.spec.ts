@@ -57,8 +57,8 @@ describe('DataService', () => {
   });
 
   it('should handle non-existent operations', (done) => {
-    service.getEquations().subscribe((statement) => {
-      expect(statement).toBeFalsy();
+    service.getEquations().subscribe((equation) => {
+      expect(equation).toBeFalsy();
       done();
     });
     httpTestingController
